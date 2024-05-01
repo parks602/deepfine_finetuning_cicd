@@ -23,7 +23,7 @@ jobs:
             cd /home/ubuntu/deepfine/
             git init
             git pull https://github.com/parks602/deepfine_finetuning_cicd.git
-            pip install -r requirements.txt
+            pip3 install -r requirements.txt
             cd /deepfine_finetuning_cicid/
             python3 train.py
             python3 deploy.py
