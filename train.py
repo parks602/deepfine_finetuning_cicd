@@ -167,4 +167,4 @@ if __name__ == '__main__':
         current_time = datetime.now().strftime("%Y%m%d%H%M")
     torch.save(best_model_wts, '%s/best_model_weights_%s.pth'%(model_dir, current_time))
 
-    add_model_performance('best_model_weights_%s.pth'%(current_time), best_acc, model_eval_file)
+    add_model_performance('%s/best_model_weights_%s.pth'%(model_dir, current_time), best_acc, model_eval_file)
