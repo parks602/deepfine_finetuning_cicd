@@ -1,31 +1,24 @@
-name: deploy
+name: SSH to EC2 Instance
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches:
       - main
 
-
 jobs:
-  SSH:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Setup Python
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.11'
-          
-      - name: ssh to ec2
+      - name: SSH to EC2
         uses: appleboy/ssh-action@master
         with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
           script: |
             cd /home/ubuntu/deepfine/
             python test.py
