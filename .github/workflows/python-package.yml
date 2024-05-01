@@ -21,6 +21,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/deepfine/
+            git init
             git clone https://github.com/parks602/deepfine_finetuning_cicd.git
             cd /deepfine_finetuning_cicid/
             python3 train.py
