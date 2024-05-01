@@ -25,7 +25,6 @@ jobs:
             git pull https://github.com/parks602/deepfine_finetuning_cicd.git
             source bin/activate
             pip3 install -r requirements.txt
-            cd /deepfine_finetuning_cicid/
             python3 train.py
             python3 deploy.py
 
