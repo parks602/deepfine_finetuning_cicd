@@ -139,7 +139,7 @@ if __name__ == '__main__':
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=40)
 
     best_acc = 0
-    epoch_length = 5
+    epoch_length = 3
     save_loss = {"train":[],
                 "test":[]}
     save_acc = {"train":[],
