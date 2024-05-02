@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
 import shutil
 import csv
-import boto3
 import logging
 
 app = FastAPI()
@@ -27,7 +26,7 @@ def deploy_model(model_name):
     
     # 배포할 경로
     deploy_path = '/deployed_models'  # 예시: 배포할 디렉토리 경로
-    
+    logger.info(f"모델 '{model_name}'을(를) 배포하는 중...")
     try:
         # 모델 파일을 배포할 경로로 복사
         shutil.copy(model_path, deploy_path)
@@ -37,29 +36,20 @@ def deploy_model(model_name):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"모델 배포 중 오류가 발생했습니다: {str(e)}")
 
-def log_to_cloudwatch(message):
-    try:
-        # CloudWatch Logs에 로그 이벤트 전송
-        response = cloudwatch.put_log_events(
-            logGroupName=log_group_name,
-            logStreamName=log_stream_name,
-            logEvents=[
-                {
-                    'timestamp': int(round(time.time() * 1000)),
-                    'message': message
-                }
-            ]
-        )
-        print("Logged to CloudWatch successfully")
-    except Exception as e:
-        print("Failed to log to CloudWatch:", e)
-
-cloudwatch = boto3.client('logs')
-
 # 로거 생성
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+# 파일 핸들러 추가
+file_handler = logging.FileHandler('deployment_logs.log')
+file_handler.setLevel(logging.INFO)
+
+# 로그 포맷 설정
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# 로거에 파일 핸들러 추가
+logger.addHandler(file_handler)
 # CloudWatch 로그 그룹 및 스트림 이름 정의
 log_group_name = '/home/ubuntu/deepfine'
 log_stream_name = 'deployment-logs'
@@ -76,11 +66,11 @@ async def deploy_best_model():
         # 가장 높은 정확도를 가진 모델 배포
         success = deploy_model(best_model_name)
         if success:
-            log_to_cloudwatch("모델 배포 성공")
+            logger.info(f"'{best_model_name}' 모델을 성공적으로 배포했습니다.")
             return {"message": f"'{best_model_name}' 모델을 성공적으로 배포했습니다."}
             
         else:            
-            log_to_cloudwatch("모델 배포 실패")
+            logger.error(f"'{best_model_name}' 모델 파일을 찾을 수 없습니다.")
             raise HTTPException(status_code=404, detail=f"'{best_model_name}' 모델 파일을 찾을 수 없습니다.")
     else:
         raise HTTPException(status_code=404, detail="CSV 파일에 모델 정보가 없거나 형식이 잘못되었습니다.")
