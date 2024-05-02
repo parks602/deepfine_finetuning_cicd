@@ -26,15 +26,7 @@ jobs:
             git pull https://github.com/parks602/deepfine_finetuning_cicd.git
             source deepfine/bin/activate
             pip3 install -r requirements.txt
-
-            
-      - name: Activate virtual environment
-        run: |
-          source /home/ubuntu/deepfine/deepfine/bin/activate
-
-      - name: Run uvicorn
-        run: |
-          /home/ubuntu/deepfine/deepfine/bin/uvicorn deploy:app --reload
+            /home/ubuntu/deepfine/deepfine/bin/uvicorn deploy:app --reload
 
 
 
