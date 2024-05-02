@@ -29,7 +29,7 @@ jobs:
             
       - name: Activate virtual environment
         run: |
-          source source /home/ubuntu/deepfine/deepfine/bin/activate
+          source /home/ubuntu/deepfine/deepfine/bin/activate
 
       - name: Run uvicorn
         run: |
