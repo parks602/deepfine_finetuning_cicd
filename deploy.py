@@ -3,7 +3,7 @@ import shutil
 import csv
 import logging
 
-app = FastAPI()
+
 
 def find_best_model(csv_file):
     best_model = None
@@ -26,33 +26,39 @@ def deploy_model(model_name):
     
     # 배포할 경로
     deploy_path = '/deployed_models'  # 예시: 배포할 디렉토리 경로
-    logger.info(f"모델 '{model_name}'을(를) 배포하는 중...")
+    logger.info(r"모델 '{model_name}'을(를) 배포하는 중..."%(model_name))
     try:
         # 모델 파일을 배포할 경로로 복사
         shutil.copy(model_path, deploy_path)
+        logger.info(r"모델 %s을(를) 성공적으로 배포했습니다."%(model_name))
         return True
     except FileNotFoundError:
+        logger.error(r"모델 %s 파일을 찾을 수 없습니다."%(model_name))
         return False
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"모델 배포 중 오류가 발생했습니다: {str(e)}")
+        logger.error(r"모델  %s 배포 중 오류가 발생했습니다: %s}"%(model_name, str(e)))
+        raise HTTPException(status_code=500, detail=r"모델 배포 중 오류가 발생했습니다: %s"%(str(e)))
 
+
+app = FastAPI(root_path="/deploy")
 # 로거 생성
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # 파일 핸들러 추가
-file_handler = logging.FileHandler('deployment_logs.log')
-file_handler.setLevel(logging.INFO)
-
+file_handler = logging.FileHandler('deployment_logs.log',  encoding='utf-8')
+file_handler.setLevel(logging.DEBUG)
 # 로그 포맷 설정
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 
+
 # 로거에 파일 핸들러 추가
 logger.addHandler(file_handler)
-# CloudWatch 로그 그룹 및 스트림 이름 정의
-log_group_name = '/home/ubuntu/deepfine'
-log_stream_name = 'deployment-logs'
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 @app.get("/deploy")
 async def deploy_best_model():
