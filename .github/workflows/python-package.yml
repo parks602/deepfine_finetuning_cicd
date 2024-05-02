@@ -27,7 +27,7 @@ jobs:
             source deepfine/bin/activate
             pip3 install -r requirements.txt
             python3 train.py
-            /home/ubuntu/deepfine/deepfine/bin/uvicorn deploy:app --reload
+            /home/ubuntu/deepfine/deepfine/bin/uvicorn deploy:app
 
 
 
