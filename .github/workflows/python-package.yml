@@ -25,7 +25,7 @@ jobs:
             git pull https://github.com/parks602/deepfine_finetuning_cicd.git
             source deepfine/bin/activate
             pip3 install -r requirements.txt
-            python3 train.py
+
             
       - name: Activate virtual environment
         run: |
