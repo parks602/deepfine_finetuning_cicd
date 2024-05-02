@@ -108,10 +108,14 @@ if __name__ == '__main__':
         
     trainset = datasets.CIFAR10(root=train_dir,train=True,
                                             download=True,transform=transform)
+    trainset_indicate = torch.randperm(len(trainset))[:len(trainset)//10]
+    trainset = torch.utils.data.Subset(trainset, trainset_indicate)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
                                             shuffle=True, num_workers=2)
     testset = datasets.CIFAR10(root=test_dir,train=False,
                                         download=True,transform=transform)
+    testset_indicate = torch.randperm(len(testset))[:len(testset)//10]
+    testset = torch.utils.data.Subset(testset, testset_indicate)
     testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
                                             shuffle=False, num_workers=2)
     classes = ('plane', 'car', 'bird', 'cat', 'deer',
