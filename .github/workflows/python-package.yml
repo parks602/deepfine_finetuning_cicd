@@ -28,5 +28,6 @@ jobs:
             python3 train.py
 
       - name : deploy
-        run : uvicorn deploy:app --reload
+        run : uvicorn main:app --host=0.0.0.0 --port=8000
+
 
