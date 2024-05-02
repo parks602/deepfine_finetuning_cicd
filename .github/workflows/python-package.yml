@@ -26,8 +26,14 @@ jobs:
             source deepfine/bin/activate
             pip3 install -r requirements.txt
             python3 train.py
+            
+      - name: Activate virtual environment
+        run: |
+          source source /home/ubuntu/deepfine/deepfine/bin/activate
 
-      - name : deploy
-        run : python3 -m uvicorn deploy:app --reload
+      - name: Run uvicorn
+        run: |
+          /home/ubuntu/deepfine/deepfine/bin/uvicorn deploy:app --reload
+
 
 
