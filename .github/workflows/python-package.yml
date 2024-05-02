@@ -28,6 +28,6 @@ jobs:
             python3 train.py
 
       - name : deploy
-        run : uvicorn main:app --reload
+        run : uvicorn deploy:app --reload
 
 
