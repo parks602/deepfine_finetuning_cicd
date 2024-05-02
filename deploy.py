@@ -42,16 +42,19 @@ def deploy_model(model_name):
 
 app = FastAPI(root_path="/deploy")
 # 로거 생성
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger = logging.getLogger("deploy")
+logger.setLevel(logging.DEBUG)
 
 # 파일 핸들러 추가
-file_handler = logging.FileHandler('deployment_logs.log',  encoding='utf-8')
+file_handler = logging.FileHandler('deployment_logs.log',  encoding='utf-8', mode='w')
 file_handler.setLevel(logging.DEBUG)
 # 로그 포맷 설정
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 
+stream_hander = logging.StreamHandler()
+stream_hander.setFormatter(formatter)
+logger.addHandler(stream_hander)
 
 # 로거에 파일 핸들러 추가
 logger.addHandler(file_handler)
@@ -64,7 +67,7 @@ async def root():
 async def deploy_best_model():
     # CSV 파일 경로
     csv_file_path = r"./evaluator.csv"
-
+    logger.info("START")
     # 가장 높은 정확도를 가진 모델명 찾기
     best_model_name = find_best_model(csv_file_path)
 
@@ -81,3 +84,7 @@ async def deploy_best_model():
     else:
         raise HTTPException(status_code=404, detail="CSV 파일에 모델 정보가 없거나 형식이 잘못되었습니다.")
 
+# 10초 후에 종료
+time.sleep(10)
+logger.info("서버가 10초 동안 실행되었습니다. 종료합니다.")
+sys.exit()
